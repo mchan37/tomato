@@ -70,6 +70,7 @@ class ImageAnnotationHandler:
         plt.show()
 
     def sift_features(self, image_ids = None, rows = 3, columns = 3, show = False):
+        # default None gives you sift_features for all images
         if image_ids is None:
             image_ids = list(self.image_id_to_image_path.keys())
 
@@ -78,6 +79,7 @@ class ImageAnnotationHandler:
             fig, axes = plt.subplots(rows, columns, figsize=(10,10))
         
         sift_features = []
+        labels = []
         
         # Display the image
         for i, image_id in enumerate(image_ids):
@@ -85,6 +87,12 @@ class ImageAnnotationHandler:
             image = cv2.imread(image_path)
             gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
+            annotations = self.image_id_to_annotations[image_id]
+            if annotations:
+                labels.append(annotations[0]['category_id']) # pick first label
+            else:
+                labels.append(-1)
+            
             # Create a SIFT detector
             sift = cv2.SIFT_create()
 
@@ -113,7 +121,7 @@ class ImageAnnotationHandler:
         if show:
             plt.show()
 
-        return sift_features
+        return sift_features, labels
 
 
 if __name__ == '__main__':
