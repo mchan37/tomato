@@ -73,6 +73,8 @@ class ImageAnnotationHandler:
         # Create a plot
         fig, axes = plt.subplots(rows, columns, figsize=(10,10))
         
+        sift_features = []
+        
         # Display the image
         for i, ax in enumerate(axes.flat):
             image_id = image_ids[i]
@@ -85,6 +87,11 @@ class ImageAnnotationHandler:
 
             # Detect keypoints and compute descriptors
             keypoints, descriptors = sift.detectAndCompute(gray, None)
+
+            if descriptors is not None:
+                sift_features.append(descriptors)
+            else:
+                sift_features.append(np.zeros((1, 128)))   
 
             # Draw keypoints on the image
             img_with_keypoints = cv2.drawKeypoints(image, keypoints, None, flags=cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
@@ -99,6 +106,8 @@ class ImageAnnotationHandler:
         # plt.imshow(cv2.cvtColor(img_with_keypoints, cv2.COLOR_BGR2RGB))
         # plt.axis('off')
         plt.show()
+
+        return sift_features
 
 
 if __name__ == '__main__':
