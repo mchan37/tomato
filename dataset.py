@@ -69,15 +69,18 @@ class ImageAnnotationHandler:
         plt.tight_layout(pad = 0.1)
         plt.show()
 
-    def sift_features(self, image_ids, rows = 3, columns = 3):
+    def sift_features(self, image_ids = None, rows = 3, columns = 3, show = False):
+        if image_ids is None:
+            image_ids = list(self.image_id_to_image_path.keys())
+
         # Create a plot
-        fig, axes = plt.subplots(rows, columns, figsize=(10,10))
+        if show:
+            fig, axes = plt.subplots(rows, columns, figsize=(10,10))
         
         sift_features = []
         
         # Display the image
-        for i, ax in enumerate(axes.flat):
-            image_id = image_ids[i]
+        for i, image_id in enumerate(image_ids):
             image_path = self.path + '/' + self.image_id_to_image_path[image_id]
             image = cv2.imread(image_path)
             gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -93,19 +96,22 @@ class ImageAnnotationHandler:
             else:
                 sift_features.append(np.zeros((1, 128)))   
 
-            # Draw keypoints on the image
-            img_with_keypoints = cv2.drawKeypoints(image, keypoints, None, flags=cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
-
-            # Display the image with keypoints in the grid
-            ax.imshow(cv2.cvtColor(img_with_keypoints, cv2.COLOR_BGR2RGB))
-            ax.axis('off')
-            # ax.set_title(image_path)
+            if show:
+                # image index to row, column
+                ax = axes[i // columns, i % columns]
+                # Draw keypoints on the image
+                img_with_keypoints = cv2.drawKeypoints(image, keypoints, None, flags=cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
+                # Display the image with keypoints in the grid
+                ax.imshow(cv2.cvtColor(img_with_keypoints, cv2.COLOR_BGR2RGB))
+                ax.axis('off')
+                # ax.set_title(image_path)
 
         # Display the image with keypoints
         # plt.figure(figsize=(10, 10))
         # plt.imshow(cv2.cvtColor(img_with_keypoints, cv2.COLOR_BGR2RGB))
         # plt.axis('off')
-        plt.show()
+        if show:
+            plt.show()
 
         return sift_features
 
@@ -114,11 +120,11 @@ if __name__ == '__main__':
     train_handler = ImageAnnotationHandler('tomato_data/train')
     valid_handler = ImageAnnotationHandler('tomato_data/valid')
 
-    train_handler.sift_features([0, 1, 2, 3, 4, 5, 6, 7, 8])
+    train_handler.sift_features([0, 1, 2, 3, 4, 5, 6, 7, 8], show = True)
     print(f'train sift_features is plotted')
 
-    valid_handler.sift_features(list(range(9)))
-    print(f'valid sift_features is plotted')
+    features = valid_handler.sift_features(list(range(9)))
+    print(f'valid sift_features is of length {len(features)}')
 
     train_handler.plot_image([0, 1, 2, 3, 4, 5, 6, 7, 8])
     print(f'train is plotted')
