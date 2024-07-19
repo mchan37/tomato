@@ -2,6 +2,9 @@ import json
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import matplotlib.image as mpimg
+import cv2
+import numpy as np
+import os
 
 # data_path = '/mnt/c/Users/megan/Downloads/Harvesting.v1i.coco/tomato_data'
 
@@ -66,9 +69,47 @@ class ImageAnnotationHandler:
         plt.tight_layout(pad = 0.1)
         plt.show()
 
+    def sift_features(self, image_ids, rows = 3, columns = 3):
+        # Create a plot
+        fig, axes = plt.subplots(rows, columns, figsize=(10,10))
+        
+        # Display the image
+        for i, ax in enumerate(axes.flat):
+            image_id = image_ids[i]
+            image_path = self.path + '/' + self.image_id_to_image_path[image_id]
+            image = cv2.imread(image_path)
+            gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+            # Create a SIFT detector
+            sift = cv2.SIFT_create()
+
+            # Detect keypoints and compute descriptors
+            keypoints, descriptors = sift.detectAndCompute(gray, None)
+
+            # Draw keypoints on the image
+            img_with_keypoints = cv2.drawKeypoints(image, keypoints, None, flags=cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
+
+            # Display the image with keypoints in the grid
+            ax.imshow(cv2.cvtColor(img_with_keypoints, cv2.COLOR_BGR2RGB))
+            ax.axis('off')
+            # ax.set_title(image_path)
+
+        # Display the image with keypoints
+        # plt.figure(figsize=(10, 10))
+        # plt.imshow(cv2.cvtColor(img_with_keypoints, cv2.COLOR_BGR2RGB))
+        # plt.axis('off')
+        plt.show()
+
+
 if __name__ == '__main__':
     train_handler = ImageAnnotationHandler('tomato_data/train')
     valid_handler = ImageAnnotationHandler('tomato_data/valid')
+
+    train_handler.sift_features([0, 1, 2, 3, 4, 5, 6, 7, 8])
+    print(f'train sift_features is plotted')
+
+    valid_handler.sift_features(list(range(9)))
+    print(f'valid sift_features is plotted')
 
     train_handler.plot_image([0, 1, 2, 3, 4, 5, 6, 7, 8])
     print(f'train is plotted')
