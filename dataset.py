@@ -39,14 +39,23 @@ class ImageAnnotationHandler:
         self.image_id_to_annotations = image_id_to_annotations
         self.category_id_to_description = category_id_to_description
         self.path = path
+        self.data = data
       
     def plot_image(self, image_ids, rows = 3, columns = 3):
-        
+        if len(image_ids) < rows * columns:
+            rows = 1
+            columns = len(image_ids)
+    
         # Create a plot
         fig, axes = plt.subplots(rows, columns, figsize=(10,10))
         
         # Display the image
-        for i, ax in enumerate(axes.flat):
+        if len(image_ids) == 1:
+            all_axes = [axes]
+        else:
+            all_axes = axes.flat
+
+        for i, ax in enumerate(all_axes):
             image_id = image_ids[i]
             image_path = self.path + '/' + self.image_id_to_image_path[image_id]
             image = mpimg.imread(image_path)
@@ -54,7 +63,9 @@ class ImageAnnotationHandler:
             ax.axis('off')
 
             # Add annotations
-            annotations = self.image_id_to_annotations[image_id]
+            annotations = self.image_id_to_annotations.get(image_id)
+            if annotations is None:
+                continue
             for annotation in annotations:
                 bbox = annotation['bbox']
                 label = self.category_id_to_description[annotation['category_id']]
@@ -87,7 +98,7 @@ class ImageAnnotationHandler:
             image = cv2.imread(image_path)
             gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
-            annotations = self.image_id_to_annotations[image_id]
+            annotations = self.image_id_to_annotations.get(image_id)
             if annotations:
                 labels.append(annotations[0]['category_id']) # pick first label
             else:
@@ -137,5 +148,5 @@ if __name__ == '__main__':
     train_handler.plot_image([0, 1, 2, 3, 4, 5, 6, 7, 8])
     print(f'train is plotted')
 
-    valid_handler.plot_image(list(range(9)))
+    valid_handler.plot_image([568])
     print(f'valid is plotted')
