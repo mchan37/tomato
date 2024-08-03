@@ -22,8 +22,8 @@ if __name__ == '__main__':
     train_handler = ImageAnnotationHandler('tomato_data/train')
     valid_handler = ImageAnnotationHandler('tomato_data/valid')
 
-    train_features, train_labels = train_handler.sift_features(list(range(10)))
-    valid_features, valid_labels = valid_handler.sift_features(list(range(10)))
+    train_features, train_labels = train_handler.sift_features()
+    valid_features, valid_labels = valid_handler.sift_features()
     
     # Prepare SIFT features for CNN
     max_keypoints = 100
