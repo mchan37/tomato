@@ -10,7 +10,10 @@ import os
 
 class ImageAnnotationHandler:
     # Loop through each image and its annotations
-    def __init__(self, path) -> None:
+    def __init__(self, path, ignore_categories = None) -> None:
+        if ignore_categories is None:
+            ignore_categories = {0} # default ignore tomato
+
         # Read the annotations JSON file
         with open(f'{path}/_annotations.coco.json', 'r') as file:
             data = json.load(file)
@@ -18,12 +21,22 @@ class ImageAnnotationHandler:
         category_id_to_description = {}
         for category in data['categories']:
             category_id = category['id']
+            if category_id in ignore_categories:
+                continue
             category_id_to_description[category_id] = category['name']
+        
+        category_id_to_label_id = {}
+        for idx, k in enumerate(category_id_to_description.keys()):
+            category_id_to_label_id[k] = idx
 
         annotations = data['annotations']
         image_id_to_annotations = {}
         for annotation in annotations:
             image_id = annotation['image_id']
+            category_id = annotation['category_id']
+            if category_id in ignore_categories:
+                continue
+
             image_annotations = image_id_to_annotations.get(image_id)
             if image_annotations is None:
                 image_annotations = []
@@ -38,8 +51,12 @@ class ImageAnnotationHandler:
         self.image_id_to_image_path = image_id_to_image_path
         self.image_id_to_annotations = image_id_to_annotations
         self.category_id_to_description = category_id_to_description
+        self.category_id_to_label_id = category_id_to_label_id
         self.path = path
         self.data = data
+
+    def num_categories(self):
+        return len(self.category_id_to_description)
       
     def plot_image(self, image_ids, rows = 3, columns = 3):
         if len(image_ids) < rows * columns:
@@ -100,7 +117,7 @@ class ImageAnnotationHandler:
 
             annotations = self.image_id_to_annotations.get(image_id)
             if annotations:
-                labels.append(annotations[0]['category_id']) # pick first label
+                labels.append(self.category_id_to_label_id[annotations[0]['category_id']]) # pick first label
             else:
                 labels.append(-1)
             

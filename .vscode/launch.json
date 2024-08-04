@@ -1,0 +1,30 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "yolo test",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "/home/mcchan/tomato/yolov7/test.py",
+            "console": "integratedTerminal",
+            "cwd": "/home/mcchan/tomato/yolov7/"
+        },
+        {
+            "name": "Python Debugger: Current File",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "cnn tomato",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "/home/mcchan/tomato/cnn_tomato.py",
+            "console": "integratedTerminal"
+        }
+    ]
+}

@@ -67,7 +67,7 @@ if __name__ == '__main__':
 
     # Instantiate the model, loss function, and optimizer
     input_shape = (max_keypoints, 128)  # Each image is represented by `max_keypoints` x 128 SIFT descriptors
-    num_classes = 4  # 4 output units
+    num_classes = train_handler.num_categories()  # 3 output units
     model = SimpleCNN(input_shape, num_classes)
 
     criterion = nn.CrossEntropyLoss()
