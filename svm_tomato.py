@@ -9,20 +9,19 @@ from sklearn.preprocessing import StandardScaler
 if __name__ == '__main__':
     # Load the data
     train_handler = ImageAnnotationHandler('tomato_data/train')
-    valid_handler = ImageAnnotationHandler('tomato_data/valid')
+    # valid_handler = ImageAnnotationHandler('tomato_data/valid')
     test_handler = ImageAnnotationHandler('tomato_data/valid')
 
     # Get pixel features
     target_size = (64, 64)  # Image size
     train_features, train_labels = train_handler.pixel_features(target_size=target_size, flatten=True)
-    valid_features, valid_labels = valid_handler.pixel_features(target_size=target_size, flatten=True)
+    # valid_features, valid_labels = valid_handler.pixel_features(target_size=target_size, flatten=True)
     test_features, test_labels = test_handler.pixel_features(target_size=target_size, flatten=True)
 
-    # Combine train and validation data for hyperparameter tuning
-    X_train_val = np.vstack((train_features, valid_features))
-    y_train_val = np.concatenate((train_labels, valid_labels))
+    X_train_val = train_features
+    y_train_val = train_labels
 
-    # Split the combined data into train and validation sets for grid search
+    # Split the data into train and validation sets for grid search
     X_train, X_valid, y_train, y_valid = train_test_split(X_train_val, y_train_val, test_size=0.2, random_state=42)
 
     # Standardize the features

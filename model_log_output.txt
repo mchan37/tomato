@@ -32,3 +32,6 @@ Epoch [9/10] - Train Loss: 0.3370, Train Acc: 0.8761, Valid Loss: 0.7373, Valid 
 Epoch [10/10] - Train Loss: 0.2500, Train Acc: 0.9059, Valid Loss: 0.8260, Valid Acc: 0.7674
 Best Validation Accuracy: 0.7674 with params: (32, 0.001, 10)
 Test Loss: 0.8260, Test Accuracy: 0.7674
+
+# xgb
+
