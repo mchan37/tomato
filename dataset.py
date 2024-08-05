@@ -50,6 +50,8 @@ class ImageAnnotationHandler:
 
         self.image_id_to_image_path = image_id_to_image_path
         self.image_id_to_annotations = image_id_to_annotations
+        image_id_with_no_annotations = set(self.image_id_to_image_path.keys()) - set(self.image_id_to_annotations.keys())
+        self.image_id_to_image_path = {k: v for k, v in self.image_id_to_image_path.items() if k not in image_id_with_no_annotations}
         self.category_id_to_description = category_id_to_description
         self.category_id_to_label_id = category_id_to_label_id
         self.path = path
