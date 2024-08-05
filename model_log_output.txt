@@ -1,3 +1,96 @@
+# SAVED MODELS
+# cnn
+
+(pytorch) mcchan@LAPTOP-5E3PRVRO:~/tomato$  cd /home/mcchan/tomato ; /usr/bin/env /home/mcchan/miniconda3/envs/pytorch/bin/python /home/mcchan/.vscode-server/extensions/ms-python.debugpy-2024.10.0-linux-x64/bundled/libs/debugpy/adapter/../../debugpy/launcher 48089 -- /home/mcchan/tomato/cnn_tomato.py 
+Training with batch size: 32, learning rate: 0.001, epochs: 10
+Epoch [1/10] - Train Loss: 2.0088, Train Acc: 0.5065, Valid Loss: 0.7498, Valid Acc: 0.6250
+Epoch [2/10] - Train Loss: 0.6387, Train Acc: 0.7173, Valid Loss: 0.6441, Valid Acc: 0.7326
+Epoch [3/10] - Train Loss: 0.5598, Train Acc: 0.7660, Valid Loss: 0.7180, Valid Acc: 0.7135
+Epoch [4/10] - Train Loss: 0.4924, Train Acc: 0.7969, Valid Loss: 0.5907, Valid Acc: 0.7622
+Epoch [5/10] - Train Loss: 0.3637, Train Acc: 0.8561, Valid Loss: 0.6436, Valid Acc: 0.7326
+Epoch [6/10] - Train Loss: 0.2871, Train Acc: 0.8944, Valid Loss: 0.5893, Valid Acc: 0.7778
+Epoch [7/10] - Train Loss: 0.2105, Train Acc: 0.9293, Valid Loss: 0.6906, Valid Acc: 0.7743
+Epoch [8/10] - Train Loss: 0.1088, Train Acc: 0.9635, Valid Loss: 0.7189, Valid Acc: 0.7674
+Epoch [9/10] - Train Loss: 0.0635, Train Acc: 0.9888, Valid Loss: 0.9489, Valid Acc: 0.7691
+Epoch [10/10] - Train Loss: 0.0320, Train Acc: 0.9955, Valid Loss: 0.9705, Valid Acc: 0.7812
+Best Validation Accuracy: 0.7812 with params: (32, 0.001, 10)
+Model saved to saved_models/best_cnn_model.pth
+/home/mcchan/tomato/cnn_tomato.py:223: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  best_model.load_state_dict(torch.load(MODEL_PATH))
+Test Loss: 0.9705, Test Accuracy: 0.7812
+
+# xgb
+
+(base) mcchan@LAPTOP-5E3PRVRO:~/tomato$  cd /home/mcchan/tomato ; /usr/bin/env /home/mcchan/miniconda3/envs/pytorch/bin/python /home/mcchan/.vscode-server/extensions/ms-python.debugpy-2024.10.0-linux-x64/bundled/libs/debugpy/adapter/../../debugpy/launcher 42425 -- /home/mcchan/tomato/xgb_tomato.py 
+Fitting 3 folds for each of 1 candidates, totalling 3 fits
+17.90s - pydevd: Sending message related to process being replaced timed-out after 5 seconds
+18.30s - pydevd: Sending message related to process being replaced timed-out after 5 seconds
+0.00s - Debugger warning: It seems that frozen modules are being used, which may
+0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off
+0.00s - to python to disable frozen modules.
+0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.
+18.72s - pydevd: Sending message related to process being replaced timed-out after 5 seconds
+0.00s - Debugger warning: It seems that frozen modules are being used, which may
+0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off
+0.00s - to python to disable frozen modules.
+0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.
+Best hyperparameters: {'colsample_bytree': 0.8, 'learning_rate': 0.1, 'max_depth': 3, 'n_estimators': 50, 'subsample': 0.8}
+Validation Accuracy: 0.7774
+Model saved to saved_models/best_xgb_model.json
+Test Accuracy: 0.7448
+
+# svm
+
+(base) mcchan@LAPTOP-5E3PRVRO:~/tomato$  /usr/bin/env /home/mcchan/miniconda3/envs/pytorch/bin/python /home/mcchan/.vscode-server/extensions/ms-python.debugpy-2024.10.0-linux-x64/bundled/libs/debugpy/adapter/../../debugpy/launcher 54643 -- /home/mcchan/tomato/svm_tomato.py 
+Fitting 3 folds for each of 1 candidates, totalling 3 fits
+27.84s - pydevd: Sending message related to process being replaced timed-out after 5 seconds
+28.34s - pydevd: Sending message related to process being replaced timed-out after 5 seconds
+0.01s - Debugger warning: It seems that frozen modules are being used, which may
+0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off
+0.00s - to python to disable frozen modules.
+0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.
+28.76s - pydevd: Sending message related to process being replaced timed-out after 5 seconds
+0.00s - Debugger warning: It seems that frozen modules are being used, which may
+0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off
+0.00s - to python to disable frozen modules.
+0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.
+29.20s - pydevd: Sending message related to process being replaced timed-out after 5 seconds
+0.00s - Debugger warning: It seems that frozen modules are being used, which may
+0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off
+0.00s - to python to disable frozen modules.
+0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.
+29.81s - pydevd: Sending message related to process being replaced timed-out after 5 seconds
+0.00s - Debugger warning: It seems that frozen modules are being used, which may
+0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off
+0.00s - to python to disable frozen modules.
+0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.
+31.52s - pydevd: Sending message related to process being replaced timed-out after 5 seconds
+0.00s - Debugger warning: It seems that frozen modules are being used, which may
+0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off
+0.00s - to python to disable frozen modules.
+0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.
+32.04s - pydevd: Sending message related to process being replaced timed-out after 5 seconds
+0.00s - Debugger warning: It seems that frozen modules are being used, which may
+0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off
+0.00s - to python to disable frozen modules.
+0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.
+32.79s - pydevd: Sending message related to process being replaced timed-out after 5 seconds
+0.00s - Debugger warning: It seems that frozen modules are being used, which may
+0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off
+0.00s - to python to disable frozen modules.
+0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.
+33.25s - pydevd: Sending message related to process being replaced timed-out after 5 seconds
+0.00s - Debugger warning: It seems that frozen modules are being used, which may
+0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off
+0.00s - to python to disable frozen modules.
+0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.
+Best hyperparameters: {'C': 0.1, 'gamma': 1, 'kernel': 'rbf'}
+Validation Accuracy: 0.3623
+Model saved to saved_models/best_svm_model.pkl
+Test Accuracy: 0.3993
+
+
+# UNSAVED MODELS
 # sift_features cnn
 
 (pytorch) mcchan@LAPTOP-5E3PRVRO:~/tomato/yolov7$  cd /home/mcchan/tomato ; /usr/bin/env /home/mcchan/miniconda3/envs/pytorch/bin/python /home/mcchan/.vscode-server/extensions/ms-python.debugpy-2024.10.0-linux-x64/bundled/libs/debugpy/adapter/../../debugpy/launcher 58001 -- /home/mcchan/tomato/cnn_tomato.py 
