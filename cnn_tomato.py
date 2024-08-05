@@ -30,34 +30,48 @@ def calculate_accuracy(predictions, labels):
 
 if __name__ == '__main__':
     # Load the data
+    use_sift = False
     train_handler = ImageAnnotationHandler('tomato_data/train')
     valid_handler = ImageAnnotationHandler('tomato_data/valid')
     test_handler = ImageAnnotationHandler('tomato_data/valid')
 
-    train_features, train_labels = train_handler.sift_features()
-    valid_features, valid_labels = valid_handler.sift_features()
-    test_features, test_labels = test_handler.sift_features()
+    if use_sift:
+        train_features, train_labels = train_handler.sift_features()
+        valid_features, valid_labels = valid_handler.sift_features()
+        test_features, test_labels = test_handler.sift_features()
+        
+        # Prepare SIFT features for CNN
+        max_keypoints = 100
+        sift_features_for_cnn_train = prepare_sift_for_cnn(train_features, max_keypoints)
+        sift_features_for_cnn_valid = prepare_sift_for_cnn(valid_features, max_keypoints)
+        sift_features_for_cnn_test = prepare_sift_for_cnn(test_features, max_keypoints)
 
-    # Prepare SIFT features for CNN
-    max_keypoints = 100
-    sift_features_for_cnn_train = prepare_sift_for_cnn(train_features, max_keypoints)
-    sift_features_for_cnn_valid = prepare_sift_for_cnn(valid_features, max_keypoints)
-    sift_features_for_cnn_test = prepare_sift_for_cnn(test_features, max_keypoints)
+        # Standardize the features
+        scaler = StandardScaler()
+        sift_features_for_cnn_train = scaler.fit_transform(sift_features_for_cnn_train)
+        sift_features_for_cnn_valid = scaler.transform(sift_features_for_cnn_valid)
+        sift_features_for_cnn_test = scaler.transform(sift_features_for_cnn_test)
 
-    # Standardize the features
-    scaler = StandardScaler()
-    sift_features_for_cnn_train = scaler.fit_transform(sift_features_for_cnn_train)
-    sift_features_for_cnn_valid = scaler.transform(sift_features_for_cnn_valid)
-    sift_features_for_cnn_test = scaler.transform(sift_features_for_cnn_test)
+        X_train = torch.tensor(sift_features_for_cnn_train, dtype=torch.float32)
+        X_valid = torch.tensor(sift_features_for_cnn_valid, dtype=torch.float32)
+        X_test = torch.tensor(sift_features_for_cnn_test, dtype=torch.float32)
+
+    else:
+        # Get pixel features instead of SIFT features
+        target_size = (224, 224)  # Image size
+        train_features, train_labels = train_handler.pixel_features(target_size=target_size)
+        valid_features, valid_labels = valid_handler.pixel_features(target_size=target_size)
+        test_features, test_labels = test_handler.pixel_features(target_size=target_size)
+
+        X_train = torch.tensor(train_features, dtype=torch.float32).permute(0, 3, 1, 2)  # Change shape to [N, C, H, W]
+        X_valid = torch.tensor(valid_features, dtype=torch.float32).permute(0, 3, 1, 2)
+        X_test = torch.tensor(test_features, dtype=torch.float32).permute(0, 3, 1, 2)
 
     # Convert datasets to PyTorch tensors
-    X_train = torch.tensor(sift_features_for_cnn_train, dtype=torch.float32)
     y_train = torch.tensor(train_labels, dtype=torch.long)
     
-    X_valid = torch.tensor(sift_features_for_cnn_valid, dtype=torch.float32)
     y_valid = torch.tensor(valid_labels, dtype=torch.long)
 
-    X_test = torch.tensor(sift_features_for_cnn_test, dtype=torch.float32)
     y_test = torch.tensor(test_labels, dtype=torch.long)
 
     # Create TensorDataset and DataLoader for datasets
@@ -65,24 +79,47 @@ if __name__ == '__main__':
     valid_dataset = TensorDataset(X_valid, y_valid)
     test_dataset = TensorDataset(X_test, y_test)
 
-    # Define the CNN model
-    class SimpleCNN(nn.Module):
-        def __init__(self, input_shape, num_classes):
-            super(SimpleCNN, self).__init__()
-            self.conv1 = nn.Conv1d(in_channels=input_shape[1], out_channels=64, kernel_size=3, padding=1)
-            self.conv2 = nn.Conv1d(in_channels=64, out_channels=128, kernel_size=3, padding=1)
-            self.flatten = nn.Flatten()
-            self.fc1 = nn.Linear(128 * input_shape[0], 256)
-            self.fc2 = nn.Linear(256, num_classes)
+    if use_sift:
+            # Define the CNN model
+        class SimpleCNN(nn.Module):
+            def __init__(self, input_shape, num_classes):
+                super(SimpleCNN, self).__init__()
+                self.conv1 = nn.Conv1d(in_channels=input_shape[1], out_channels=64, kernel_size=3, padding=1)
+                self.conv2 = nn.Conv1d(in_channels=64, out_channels=128, kernel_size=3, padding=1)
+                self.flatten = nn.Flatten()
+                self.fc1 = nn.Linear(128 * input_shape[0], 256)
+                self.fc2 = nn.Linear(256, num_classes)
 
-        def forward(self, x):
-            x = x.view(x.size(0), 128, -1)
-            x = torch.relu(self.conv1(x))
-            x = torch.relu(self.conv2(x))
-            x = self.flatten(x)
-            x = torch.relu(self.fc1(x))
-            x = self.fc2(x)
-            return x
+            def forward(self, x):
+                x = x.view(x.size(0), 128, -1)
+                x = torch.relu(self.conv1(x))
+                x = torch.relu(self.conv2(x))
+                x = self.flatten(x)
+                x = torch.relu(self.fc1(x))
+                x = self.fc2(x)
+                return x
+        input_shape = (max_keypoints, 128)  # Each image is represented by `max_keypoints` x 128 SIFT descriptors
+    else:
+        # Define the CNN model for RGB images
+        class SimpleCNN(nn.Module):
+            def __init__(self, input_shape, num_classes):
+                super(SimpleCNN, self).__init__()
+                self.conv1 = nn.Conv2d(in_channels=input_shape[0], out_channels=32, kernel_size=3, padding=1)
+                self.conv2 = nn.Conv2d(in_channels=32, out_channels=64, kernel_size=3, padding=1)
+                self.flatten = nn.Flatten()
+                self.fc1 = nn.Linear(64 * (input_shape[1] // 4) * (input_shape[2] // 4), 256)  # Adjust according to pooling
+                self.fc2 = nn.Linear(256, num_classes)
+
+            def forward(self, x):
+                x = torch.relu(self.conv1(x))
+                x = torch.max_pool2d(x, kernel_size=2, stride=2)
+                x = torch.relu(self.conv2(x))
+                x = torch.max_pool2d(x, kernel_size=2, stride=2)
+                x = self.flatten(x)
+                x = torch.relu(self.fc1(x))
+                x = self.fc2(x)
+                return x
+        input_shape = (3, target_size[0], target_size[1])  # Input shape for RGB images
 
     # Hyperparameter tuning setup
     hyperparameters = {
@@ -94,7 +131,6 @@ if __name__ == '__main__':
         'num_epochs': [10],
     }
 
-    input_shape = (max_keypoints, 128)  # Each image is represented by `max_keypoints` x 128 SIFT descriptors
     num_classes = train_handler.num_categories()  # Number of classes
 
     # Grid search over hyperparameters

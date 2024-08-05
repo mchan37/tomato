@@ -1,0 +1,34 @@
+# sift_features cnn
+
+(pytorch) mcchan@LAPTOP-5E3PRVRO:~/tomato/yolov7$  cd /home/mcchan/tomato ; /usr/bin/env /home/mcchan/miniconda3/envs/pytorch/bin/python /home/mcchan/.vscode-server/extensions/ms-python.debugpy-2024.10.0-linux-x64/bundled/libs/debugpy/adapter/../../debugpy/launcher 58001 -- /home/mcchan/tomato/cnn_tomato.py 
+Backend qtagg is interactive backend. Turning interactive mode on.
+Training with batch size: 32, learning rate: 0.001, epochs: 10
+Epoch [1/10] - Train Loss: 1.1019, Train Acc: 0.3930, Valid Loss: 1.0912, Valid Acc: 0.3993
+Epoch [2/10] - Train Loss: 0.9941, Train Acc: 0.5102, Valid Loss: 1.1597, Valid Acc: 0.4132
+Epoch [3/10] - Train Loss: 0.5194, Train Acc: 0.8126, Valid Loss: 1.4225, Valid Acc: 0.4097
+Epoch [4/10] - Train Loss: 0.0758, Train Acc: 0.9874, Valid Loss: 1.9847, Valid Acc: 0.3993
+Epoch [5/10] - Train Loss: 0.0097, Train Acc: 1.0000, Valid Loss: 2.1976, Valid Acc: 0.4062
+Epoch [6/10] - Train Loss: 0.0018, Train Acc: 1.0000, Valid Loss: 2.3166, Valid Acc: 0.4010
+Epoch [7/10] - Train Loss: 0.0009, Train Acc: 1.0000, Valid Loss: 2.4006, Valid Acc: 0.4010
+Epoch [8/10] - Train Loss: 0.0006, Train Acc: 1.0000, Valid Loss: 2.4637, Valid Acc: 0.4062
+Epoch [9/10] - Train Loss: 0.0005, Train Acc: 1.0000, Valid Loss: 2.5120, Valid Acc: 0.4028
+Epoch [10/10] - Train Loss: 0.0004, Train Acc: 1.0000, Valid Loss: 2.5618, Valid Acc: 0.4062
+Best Validation Accuracy: 0.4062 with params: (32, 0.001, 10)
+Test Loss: 2.5618, Test Accuracy: 0.4062
+
+#image pixels cnn
+
+(pytorch) mcchan@LAPTOP-5E3PRVRO:~/tomato$  cd /home/mcchan/tomato ; /usr/bin/env /home/mcchan/miniconda3/envs/pytorch/bin/python /home/mcchan/.vscode-server/extensions/ms-python.debugpy-2024.10.0-linux-x64/bundled/libs/debugpy/adapter/../../debugpy/launcher 37071 -- /home/mcchan/tomato/cnn_tomato.py 
+Training with batch size: 32, learning rate: 0.001, epochs: 10
+Epoch [1/10] - Train Loss: 2.1395, Train Acc: 0.3830, Valid Loss: 0.9124, Valid Acc: 0.5868
+Epoch [2/10] - Train Loss: 0.8005, Train Acc: 0.6463, Valid Loss: 0.6672, Valid Acc: 0.7257
+Epoch [3/10] - Train Loss: 0.6807, Train Acc: 0.6885, Valid Loss: 0.6254, Valid Acc: 0.7135
+Epoch [4/10] - Train Loss: 0.6268, Train Acc: 0.7292, Valid Loss: 0.6086, Valid Acc: 0.7517
+Epoch [5/10] - Train Loss: 0.5891, Train Acc: 0.7359, Valid Loss: 0.6357, Valid Acc: 0.7205
+Epoch [6/10] - Train Loss: 0.5422, Train Acc: 0.7609, Valid Loss: 0.6146, Valid Acc: 0.7552
+Epoch [7/10] - Train Loss: 0.4859, Train Acc: 0.7914, Valid Loss: 0.6920, Valid Acc: 0.7274
+Epoch [8/10] - Train Loss: 0.4240, Train Acc: 0.8297, Valid Loss: 0.6584, Valid Acc: 0.7535
+Epoch [9/10] - Train Loss: 0.3370, Train Acc: 0.8761, Valid Loss: 0.7373, Valid Acc: 0.7552
+Epoch [10/10] - Train Loss: 0.2500, Train Acc: 0.9059, Valid Loss: 0.8260, Valid Acc: 0.7674
+Best Validation Accuracy: 0.7674 with params: (32, 0.001, 10)
+Test Loss: 0.8260, Test Accuracy: 0.7674

@@ -153,6 +153,31 @@ class ImageAnnotationHandler:
 
         return sift_features, labels
 
+    def pixel_features(self, image_ids=None, target_size=(224, 224)):
+        # Default None gives you pixel features for all images
+        if image_ids is None:
+            image_ids = list(self.image_id_to_image_path.keys())
+
+        pixel_features = []
+        labels = []
+
+        for image_id in image_ids:
+            image_path = self.path + '/' + self.image_id_to_image_path[image_id]
+            image = cv2.imread(image_path)
+            image = cv2.resize(image, target_size)  # Resize the image to a fixed size
+
+            # Normalize pixel values to [0, 1]
+            image = image.astype('float32') / 255.0
+
+            annotations = self.image_id_to_annotations.get(image_id)
+            if annotations:
+                labels.append(self.category_id_to_label_id[annotations[0]['category_id']])  # Pick first label
+            else:
+                labels.append(-1)
+
+            pixel_features.append(image)
+
+        return np.array(pixel_features), np.array(labels)
 
 if __name__ == '__main__':
     train_handler = ImageAnnotationHandler('tomato_data/train')
@@ -164,8 +189,9 @@ if __name__ == '__main__':
     features = valid_handler.sift_features(list(range(9)))
     print(f'valid sift_features is of length {len(features)}')
 
+    # Plot some images
     train_handler.plot_image([0, 1, 2, 3, 4, 5, 6, 7, 8])
-    print(f'train is plotted')
+    print(f'Train images are plotted')
 
     valid_handler.plot_image([568])
-    print(f'valid is plotted')
+    print(f'Validation images are plotted')
