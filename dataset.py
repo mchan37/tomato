@@ -9,6 +9,18 @@ import os
 # data_path = '/mnt/c/Users/megan/Downloads/Harvesting.v1i.coco/tomato_data'
 
 class ImageAnnotationHandler:
+    category_id_to_label_id = {}
+    label_id_to_category_id = {}
+
+    def add_label_id_map(self, category_ids):
+        for category_id in category_ids:
+            label_id = ImageAnnotationHandler.category_id_to_label_id.get(category_id)
+            if label_id is not None:
+                continue
+            label_id = len(ImageAnnotationHandler.category_id_to_label_id)
+            ImageAnnotationHandler.category_id_to_label_id[category_id] = label_id
+            ImageAnnotationHandler.label_id_to_category_id[label_id] = category_id
+
     # Loop through each image and its annotations
     def __init__(self, path, ignore_categories = None) -> None:
         if ignore_categories is None:
@@ -24,10 +36,7 @@ class ImageAnnotationHandler:
             if category_id in ignore_categories:
                 continue
             category_id_to_description[category_id] = category['name']
-        
-        category_id_to_label_id = {}
-        for idx, k in enumerate(category_id_to_description.keys()):
-            category_id_to_label_id[k] = idx
+        self.add_label_id_map(category_id_to_description.keys())
 
         annotations = data['annotations']
         image_id_to_annotations = {}
@@ -53,7 +62,6 @@ class ImageAnnotationHandler:
         image_id_with_no_annotations = set(self.image_id_to_image_path.keys()) - set(self.image_id_to_annotations.keys())
         self.image_id_to_image_path = {k: v for k, v in self.image_id_to_image_path.items() if k not in image_id_with_no_annotations}
         self.category_id_to_description = category_id_to_description
-        self.category_id_to_label_id = category_id_to_label_id
         self.path = path
         self.data = data
 
