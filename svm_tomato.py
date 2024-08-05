@@ -5,6 +5,12 @@ from sklearn.svm import SVC
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import GridSearchCV
 from sklearn.preprocessing import StandardScaler
+import joblib
+import os
+
+# Directory where the model will be saved
+MODEL_DIR = 'saved_models'
+MODEL_PATH = os.path.join(MODEL_DIR, 'best_svm_model.pkl')
 
 if __name__ == '__main__':
     # Load the data
@@ -59,7 +65,16 @@ if __name__ == '__main__':
     valid_accuracy = accuracy_score(y_valid, y_valid_pred)
     print(f'Validation Accuracy: {valid_accuracy:.4f}')
 
+    # Save the best model
+    if not os.path.exists(MODEL_DIR):
+        os.makedirs(MODEL_DIR)
+    joblib.dump(best_svm_model, MODEL_PATH)
+    print(f'Model saved to {MODEL_PATH}')
+
+    # Load the model for evaluation
+    loaded_svm_model = joblib.load(MODEL_PATH)
+
     # Evaluate on test data
-    y_test_pred = best_svm_model.predict(test_features)
+    y_test_pred = loaded_svm_model.predict(test_features)
     test_accuracy = accuracy_score(test_labels, y_test_pred)
     print(f'Test Accuracy: {test_accuracy:.4f}')

@@ -6,6 +6,11 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader, TensorDataset
 from itertools import product  # For creating hyperparameter combinations
+import os
+
+# Directory where the model will be saved
+MODEL_DIR = 'saved_models'
+MODEL_PATH = os.path.join(MODEL_DIR, 'best_cnn_model.pth')
 
 def prepare_sift_for_cnn(sift_features, max_keypoints=100):
     fixed_size_features = []
@@ -207,9 +212,15 @@ if __name__ == '__main__':
 
     print(f'Best Validation Accuracy: {best_valid_accuracy:.4f} with params: {best_params}')
 
+    # Save the best model
+    if not os.path.exists(MODEL_DIR):
+        os.makedirs(MODEL_DIR)
+    torch.save(best_model_state, MODEL_PATH)
+    print(f'Model saved to {MODEL_PATH}')
+
     # Evaluate on the test set with the best model
     best_model = SimpleCNN(input_shape, num_classes)
-    best_model.load_state_dict(best_model_state)
+    best_model.load_state_dict(torch.load(MODEL_PATH))
     best_model.eval()
 
     test_dataloader = DataLoader(test_dataset, batch_size=best_params[0], shuffle=False)
