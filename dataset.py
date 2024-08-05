@@ -153,7 +153,7 @@ class ImageAnnotationHandler:
 
         return sift_features, labels
 
-    def pixel_features(self, image_ids=None, target_size=(224, 224)):
+    def pixel_features(self, image_ids=None, target_size=(224, 224), flatten=False):
         # Default None gives you pixel features for all images
         if image_ids is None:
             image_ids = list(self.image_id_to_image_path.keys())
@@ -175,7 +175,10 @@ class ImageAnnotationHandler:
             else:
                 labels.append(-1)
 
-            pixel_features.append(image)
+            if flatten:
+                pixel_features.append(image.flatten())  # Flatten the image
+            else:
+                pixel_features.append(image)
 
         return np.array(pixel_features), np.array(labels)
 
